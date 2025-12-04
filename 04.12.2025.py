@@ -9,38 +9,35 @@ def prepare_input():
     w = len(lines[0])
     for y in range(h):
         for x in range(w):
-            cells[(x, y)] = lines[y][x]
+            if lines[y][x] in ('@'):
+                cells[(x, y)] = lines[y][x]
 
-    print(cells)
     return cells
 
 
+deltas = [(-1, -1), (0, -1), (1, -1),
+          (-1,  0),          (1,  0),
+          (-1,  1), (0,  1), (1,  1)]
+
+
 def count_adjacent(cells, xy):
-    deltas = [(-1, -1), (0, -1), (1, -1),
-              (-1,  0),          (1,  0),
-              (-1,  1), (0,  1), (1,  1)]
-
-    counts = 0
-    for dx, dy in deltas:
-        nx, ny = xy[0] + dx, xy[1] + dy
-        counts += 1 if cells.get((nx, ny), None) == '@' else 0
-
-    return counts
+    return sum([1 for dx, dy in deltas if cells.get((xy[0] + dx, xy[1] + dy), None)])
 
 
 def part_one(cells):
-    return sum([1 for cell in cells.keys() if cells.get(cell) == '@' and count_adjacent(cells, cell) < 4])
+    return sum([1 for cell in cells.keys() if cells.get(cell) and count_adjacent(cells, cell) < 4])
 
 
 def part_two(cells):
     count = 0
 
     while True:
-        accessible = [cell for cell in cells.keys() if cells.get(cell) == '@' and count_adjacent(cells, cell) < 4]
+        accessible = [cell for cell in cells.keys() if cells.get(cell) and count_adjacent(cells, cell) < 4]
         if not accessible:
             break
         count += len(accessible)
-        cells = dict(filter(lambda x: x[0] not in accessible, cells.items()))
+        for cell in accessible:
+            del cells[cell]
 
     return count
 
