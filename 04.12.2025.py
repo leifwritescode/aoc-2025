@@ -42,13 +42,21 @@ def part_two(cells):
     return count
 
 
+def part_two_recursive(cells):
+    accessible = dict(filter(lambda cell: count_adjacent(cells, cell[0]) < 4, cells.items()))
+    if not accessible:
+        return 0
+
+    return len(accessible) + part_two_recursive({k: v for k, v in cells.items() if k not in accessible})
+
+
 def main():
     input = prepare_input()
 
     res = timed(lambda: part_one(input))
     print("part 1:", res)
 
-    res = timed(lambda: part_two(input))
+    res = timed(lambda: part_two_recursive(input))
     print("part 2:", res)
 
 
