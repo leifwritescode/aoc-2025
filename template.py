@@ -1,8 +1,8 @@
 from utilities import read_input, timed
 
 
-def prepare_input():
-    lines = read_input()
+def prepare_input(example=False, strip_lines=True):
+    lines = read_input(example, strip_lines)
     return lines
 
 
