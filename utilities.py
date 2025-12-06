@@ -2,7 +2,7 @@ import __main__
 from pathlib import Path
 import time
 
-def read_input(example = False):
+def read_input(example = False, strip_lines = True):
     path = Path(__main__.__file__)
     input_file_name = path.stem + '.txt'
 
@@ -11,7 +11,8 @@ def read_input(example = False):
 
     input_file_absolute_path = path.with_name(input_file_name)
     with open(input_file_absolute_path, 'r') as file:
-        lines = [line.strip() for line in file]
+        lines = [line.strip() if strip_lines else line.replace('\n', '') for line in file]
+
     return lines
 
 
