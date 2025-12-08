@@ -15,7 +15,6 @@ def prepare_input(example=False, strip_lines=True):
                 manifolds.append((x, y))
             elif lines[y][x] == 'S':
                 start = (x, y)
-
     # sort the manifolds first by x, then by y
     # we can then always find the first x == tachyon_beam_origin_x, y > tachyon_beam_origin_y
     manifolds = sorted(manifolds, key=lambda p: (p[0], p[1]))
@@ -39,8 +38,33 @@ def part_one(input):
     return len(hits)
 
 
+def many_worlds_interpretation(manifolds, start):
+    memo = { }
+
+    def find_timelines(ray):
+        if ray in memo:
+            return memo[ray]
+
+        # for a given ray, find the next hit. if there is none, the timeline ends here
+        x, y = ray
+        manifold = next(((mx, my) for mx, my in manifolds if mx == x and my > y), None)
+        if manifold is None:
+            memo[ray] = 1
+            return memo[ray]
+
+        # otherwise, split into two new timelines and explore them
+        mx, my = manifold
+        left_timelines = find_timelines((mx-1, my))
+        right_timelines = find_timelines((mx+1, my))
+        memo[ray] = left_timelines + right_timelines
+        return memo[ray]
+
+    return find_timelines(start)
+
+
 def part_two(input):
-    return -1
+    start, manifolds = input
+    return many_worlds_interpretation(manifolds, start)
 
 
 def main():
